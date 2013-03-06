@@ -1,0 +1,132 @@
+﻿<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<link type="text/css" href="css/smoothness/jquery-ui-1.8.19.custom.css" rel="Stylesheet" />	
+	<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+	<script type="text/javascript" src="js/jquery-ui-1.8.19.custom.min.js"></script>
+	<script type="text/javascript">
+		function player_edit(k, v){
+			$("#player_list>option:selected").each(function(){
+				data = {}
+				data["objid"] = this.value;
+				data[k] = v;
+				$.ajax({
+					type: "GET",
+					url: "/ajax/player/edit",
+					data: data,
+					success:function(data){
+					}
+				});
+				return false;
+			});
+		}
+	
+		function player_info_refresh(objid){
+			$.ajax({
+				type: "GET",
+				url: "/ajax/player/info",
+				data: {"objid":objid, "req":"name,x,y,z,cp,maxcp,hp,maxhp,mp,maxmp"},
+				success:function(data){
+					$("#name").html(data.name);
+					$("#objid").html(objid);
+					$("#x").html(data.x);
+					$("#y").html(data.y);
+					$("#z").html(data.z);
+					$("#cp").val(data.cp);
+					$("#hp").val(data.hp);
+					$("#mp").val(data.mp);
+					$("#maxcp").html(data.maxcp);
+					$("#maxhp").html(data.maxhp);
+					$("#maxmp").html(data.maxmp);
+				}
+			});
+		}
+	
+		function player_list_refresh(){
+			$.ajax({
+				type: "GET",
+				url: "/ajax/player/list",
+				data: {"req":"name"},
+				success:function(data){
+					$("#player_list>option").each(function(){
+						for(objid in data){
+							if(objid == this.value){
+								return true
+							}
+						}
+						$(this).remove();
+					});
+					for(objid in data){
+						o = $("#player_list>option[value="+objid+"]") 
+						if(o.length == 0){
+							$("#player_list").append('<option value='+objid+'>'+data[objid].name+'</option>');
+						}else{
+						}						
+						
+					}
+					$("#player_list>option:selected").each(function(){
+						player_info_refresh(this.value);
+						return false;
+					});
+				}
+			});
+		}
+	
+	
+		var auto_refresh_timer;
+		function auto_refresh(){
+			player_list_refresh();
+			auto_refresh_timer = setTimeout("auto_refresh();", 1000 * 5);
+		}
+	
+		$().ready(function(){
+			$("#player_list").change(function(){
+				player_list_refresh();
+			});
+			$("#auto_refresh").change(function(){
+				if(this.checked){
+					auto_refresh();
+				}else{
+					clearTimeout(auto_refresh_timer);
+				}
+			});
+			$("#cp").blur(function(){
+				player_edit("cp", this.value);
+			});
+			$("#hp").blur(function(){
+				player_edit("hp", this.value);
+			});
+			$("#mp").blur(function(){
+				player_edit("mp", this.value);
+			});
+			player_list_refresh();
+		});
+	</script>
+</head>
+
+<style type="text/css">
+	body{margin:0;}
+	#player_list{width:150px;}
+	#div_player_list{float:left; background-color:cccccc;}
+	#div_player_info{float:left; padding:10px;}
+	#cp_slider, #hp_slider, #mp_slider{width:200px;}
+</style>
+
+<body>
+<div id="div_player_list">
+	<input type="checkbox" id="auto_refresh" name="auto_refresh"/>自動更新
+	<a href="javascript:void(0);" onclick="javascript:player_list_refresh();">手動更新</a><BR>
+	<select id="player_list" size=20"></select>
+</div>
+<div id=div_player_info>
+<span id=name></span><BR>
+objid:<span id=objid></span><BR>
+X:<span id=x></span><BR>
+Y:<span id=y></span><BR>
+Z:<span id=z></span><BR>
+cp:<input id=cp type=text size=2></input> / <span id=maxcp></span><BR>
+hp:<input id=hp type=text size=2></input> / <span id=maxhp></span><BR>
+mp:<input id=mp type=text size=2></input> / <span id=maxmp></span><BR>
+</div>
+</body>
+</html>

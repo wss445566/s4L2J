@@ -1,0 +1,67 @@
+﻿<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<link type="text/css" href="css/smoothness/jquery-ui-1.8.19.custom.css" rel="Stylesheet" />	
+	<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+	<script type="text/javascript" src="js/jquery-ui-1.8.19.custom.min.js"></script>
+	<script type="text/javascript">
+		$().ready(function(){
+			$.ajax({
+				type: "GET",
+				url: "/ajax/quest/list",
+				data: {"req":"id,file"},
+				success:function(data){
+					ql = $("#div_quest_list").html("<table></table>");
+					t = $("#div_quest_list > table");
+					for(q in data){
+						qn = data[q][0];
+						if(data[q][1].file){
+							file_link = "<a target=_blank href='/ajax/quest/get_source?name="+qn+"'>source</a>";
+						}else{
+							file_link = "";
+						}
+						t.append("<tr><td>"+qn+"</td><td><input type=button value='重載'></td><td><input type=button value='卸載'></td><td>"+file_link+"</td></tr>");
+					}
+					//$("#div_quest_list tr:odd").css({"background-color":"#cccccc"});
+					$("#div_quest_list input:[value=重載]").click(function(){
+						$.ajax({
+							type: "GET",
+							url: "/ajax/quest/reload",
+							data: {"name":$(this).parent().parent().children(":first-child").html()},
+							success:function(data){
+							}
+						});
+					});
+					$("#div_quest_list input:[value=卸載]").click(function(){
+						$.ajax({
+							type: "GET",
+							url: "/ajax/quest/unload",
+							data: {"name":$(this).parent().parent().children(":first-child").html()},
+							success:function(data){
+							}
+						});
+					});
+				}
+			});
+			$("#quest_filter").keyup(function(){
+				$("#div_quest_list>table>tbody>tr>td:not(contains('"+this.value+"'))").parent().hide();
+				$("#div_quest_list>table>tbody>tr>td:contains('"+this.value+"')").parent().show();
+			});
+		});
+	</script>
+</head>
+
+<style type="text/css">
+	body{margin:0;}
+	tr{}
+	tr:hover{background-color:#CCCCCC;}
+</style>
+
+<body>
+<div id="div_cp">
+搜尋<input id=quest_filter type=text>
+</div>
+<div id="div_quest_list">
+</div>
+</body>
+</html>

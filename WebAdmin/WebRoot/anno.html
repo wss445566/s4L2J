@@ -1,0 +1,191 @@
+﻿<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+	<script type="text/javascript">
+		function reload_anno(){
+			$("#anno_list").html("");
+			$.ajax({
+				type: "GET",
+				url: "/ajax/server/anno/list",
+				success:function(data){
+					t = $("<table><thead>一般公告</thead></table>");
+					for(x in data){
+						tr = $("<tr></tr>");
+						td = $("<td></td>");
+						td.text(data[x]);
+						td2 = $("<td></td>");
+						$("<input type=button value=刪除 value2="+x+">").appendTo(td2).click(function(){
+							$.ajax({
+								type: "GET",
+								url: "/ajax/server/anno/del",
+								data: {"id":$(this).attr("value2")},
+								success:function(data){
+									reload_anno();
+								}
+							});
+						});
+						tr.append(td2).append(td);
+						t.append(tr);
+					}
+					$("#anno_list").append(t);
+				}
+			});
+		}
+		function reload_canno(){
+			$("#canno_list").html("");
+			$.ajax({
+				type: "GET",
+				url: "/ajax/server/anno/clist",
+				success:function(data){
+					t = $("<table><thead>重要公告</thead></table>");
+					for(x in data){
+						tr = $("<tr></tr>");
+						td = $("<td></td>");
+						td.text(data[x]);
+						td2 = $("<td></td>");
+						$("<input type=button value=刪除 value2="+x+">").appendTo(td2).click(function(){
+							$.ajax({
+								type: "GET",
+								url: "/ajax/server/anno/cdel",
+								data: {"id":$(this).attr("value2")},
+								success:function(data){
+									reload_canno();
+								}
+							});
+						});
+						tr.append(td2).append(td);
+						t.append(tr);
+					}
+					$("#canno_list").append(t);
+				}
+			});
+		}
+
+		function reload_aanno(){
+			$("#aanno_list").html("");
+			$.ajax({
+				type: "GET",
+				url: "/ajax/server/anno/alist",
+				success:function(data){
+					t = $("<table><thead>循環公告</thead></table>");
+					for(x in data){
+						tr = $("<tr></tr>");
+						td = $("<td></td>");
+						td.text(data[x]);
+						td2 = $("<td></td>");
+						$("<input type=button value=刪除 value2="+x+">").appendTo(td2).click(function(){
+							$.ajax({
+								type: "GET",
+								url: "/ajax/server/anno/adel",
+								data: {"id":$(this).attr("value2")},
+								success:function(data){
+									reload_aanno();
+								}
+							});
+						});
+						tr.append(td2).append(td);
+						t.append(tr);
+					}
+					$("#aanno_list").append(t);
+				}
+			});
+		}
+		
+		$().ready(function(){
+			$("#anno_once_button").click(function(){
+				$.ajax({
+					type: "POST",
+					processData: false,
+					url: "/ajax/server/anno/once",
+					data: $("#anno_once_text").val(),
+					success:function(data){
+					}
+				});
+				return false;
+			});
+			
+			$("#add_anno").click(function(){
+				$.ajax({
+					type: "GET",
+					//processData: false,
+					url: "/ajax/server/anno/add",
+					data: {"text":$("#anno_text").val()},
+					success:function(data){
+					}
+				});
+				reload_anno();
+			});
+
+			$("#add_canno").click(function(){
+				$.ajax({
+					type: "GET",
+					//processData: false,
+					url: "/ajax/server/anno/cadd",
+					data: {"text":$("#anno_text").val()},
+					success:function(data){
+					}
+				});
+				reload_canno();
+			});
+			
+			$("#add_aanno").click(function(){
+				$.ajax({
+					type: "GET",
+					//processData: false,
+					url: "/ajax/server/anno/aadd",
+					data: {"initial":parseInt($("#initial").val())*1000, "delay":parseInt($("#delay").val())*1000, "repeat":$("#repeat").val(), "text":$("#anno_text").val(), "crit":$("#crit").val()},
+					success:function(data){
+					}
+				});
+				reload_aanno();
+			});
+
+			$("#show_anno").click(function(){
+				$.ajax({
+					type: "GET",
+					//processData: false,
+					url: "/ajax/server/anno/show",
+					//data: {"text":$("#anno_text").val()},
+					success:function(data){
+					}
+				});
+				reload_canno();
+			});
+			
+			reload_anno();
+			reload_canno();
+			reload_aanno();
+		});
+	</script>
+</head>
+
+<style type="text/css">
+	#anno_list {background-color:#dddddd;}
+	#canno_list {background-color:#dd7777;}
+	#aanno_list {background-color:#77dd77;}
+	#anno_list tr:hover{background-color:#cccccc;}
+	#canno_list tr:hover{background-color:#cc6666;}
+	#aanno_list tr:hover{background-color:#66cc66;}
+	#anno_text{width:400px; height:50px;}
+</style>
+
+<body>
+
+<input id="anno_once_text" type="text" /><input id=anno_once_button type=button value="一次性公告" />
+<div>
+<textarea id=anno_text></textarea><BR>
+<input id="add_anno" type=button value="新增一般公告">
+<input id="add_canno" type=button value="新增重要公告"><BR>
+延遲開始<input id="initial" type=text size=2 value=0>秒<BR>
+相隔<input id="delay" type=text size=2 value=300>秒<BR>
+重復<input id="repeat" type=text size=2 value="-1">次(註:-1等於無限次)<BR>
+0=不重要, 1=重要<input id="crit" type=text size=2 value=0>
+<input id="add_aanno" type=button value="新增循環公告">
+</div>
+<input id="show_anno" type=button value="發出所有公告">
+<div id=anno_list></div>
+<div id=canno_list></div>
+<div id=aanno_list></div>
+</body>
+</html>

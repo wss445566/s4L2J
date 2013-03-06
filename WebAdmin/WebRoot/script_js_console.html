@@ -1,0 +1,101 @@
+﻿<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<link type="text/css" href="css/smoothness/jquery-ui-1.8.19.custom.css" rel="Stylesheet" />	
+	<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+	<script type="text/javascript" src="js/jquery-ui-1.8.19.custom.min.js"></script>
+	<script language="Javascript" type="text/javascript" src="/edit_area/edit_area_full.js"></script>
+	<script type="text/javascript">
+
+		editAreaLoader.init({
+			id: "editArea"	// id of the textarea to transform
+			,debug: false
+			,smooth_selection: true
+			,font_size: "10"		// not for IE
+			,font_family: "monospace"	// can be "verdana,monospace". Allow non monospace font but Firefox get smaller tabulation with non monospace fonts. IE doesn't change the tabulation width and Opera doesn't take this option into account... 
+			,start_highlight: true //false	// if start with highlight
+			,toolbar: "search, go_to_line, fullscreen, |, undo, redo, |, select_font,|, change_smooth_selection, highlight, reset_highlight, word_wrap, |, help"
+			,begin_toolbar: ""		//  "new_document, save, load, |"
+			,end_toolbar: ""		// or end_toolbar
+			,is_multi_files: false		// enable the multi file mode (the textarea content is ignored)
+			,allow_resize: "both"	// possible values: "no", "both", "x", "y"
+			,show_line_colors: false	// if the highlight is disabled for the line currently beeing edited (if enabled => heavy CPU use)
+			,min_width: 400
+			,min_height: 125
+			,replace_tab_by_spaces: false
+			,allow_toggle: false //true		// true or false
+			,language: "en"
+			,syntax: "js" //""
+			,syntax_selection_allow: "java,js,python" //"basic,brainfuck,c,coldfusion,cpp,css,html,java,js,pas,perl,php,python,ruby,robotstxt,sql,tsql,vb,xml"
+			,display: "onload" 		// onload or later
+			,max_undo: 30
+			,browsers: "known"	// all or known
+			,plugins: "" // comma separated plugin list
+			,gecko_spellcheck: false	// enable/disable by default the gecko_spellcheck
+			,fullscreen: false
+			,is_editable: true
+			,cursor_position: "begin"
+			,word_wrap: true //false		// define if the text is wrapped of not in the textarea
+			,autocompletion: false	// NOT IMPLEMENTED			
+			,load_callback: ""		// click on load button (function name)
+			,save_callback: ""		// click on save button (function name)
+			,change_callback: ""	// textarea onchange trigger (function name)
+			,submit_callback: "submit_script"	// form submited (function name)
+			,EA_init_callback: ""	// EditArea initiliazed (function name)
+			,EA_delete_callback: ""	// EditArea deleted (function name)
+			,EA_load_callback: ""	// EditArea fully loaded and displayed (function name)
+			,EA_unload_callback: ""	// EditArea delete while being displayed (function name)
+			,EA_toggle_on_callback: ""	// EditArea toggled on (function name)
+			,EA_toggle_off_callback: ""	// EditArea toggled off (function name)
+			,EA_file_switch_on_callback: ""	// a new tab is selected (called for the newly selected file)
+			,EA_file_switch_off_callback: ""	// a new tab is selected (called for the previously selected file)
+			,EA_file_close_callback: ""		// close a tab
+		});	
+
+		function submit_script(id){
+			data = editAreaLoader.getValue(id);
+			$.ajax({
+				type: "POST",
+				processdata: false,
+				url: "/ajax/script/execjs",
+				data: data,
+				dataType: "text",
+				success:function(data){
+					$("#result").html("<pre>"+data+"</pre>");
+				},
+				error:function(jqXHR, textStatus, errorThrown){
+					$("#result").html("<pre>"+errorThrown+"</pre>");
+				}
+			});
+		}
+
+		$().ready(function(){
+			$("form").submit(function(){
+				return false;
+			});
+		});
+
+	</script>
+</head>
+
+<style type="text/css">
+	body{margin:0;}
+	#result pre{height:40%; background-color:#F7C1B2; overflow:scroll;}
+	pre {
+	white-space: pre-wrap; /* css-3 */
+	white-space: -moz-pre-wrap !important; /* Mozilla, since 1999 */
+	white-space: -pre-wrap; /* Opera 4-6 */
+	white-space: -o-pre-wrap; /* Opera 7 */
+	word-wrap: break-word; /* Internet Explorer 5.5+ */
+	}
+</style>
+
+<body>
+<form>
+<input type=submit> Javascript console
+<textarea id="editArea" style="height: 50%; width: 100%;">
+</textarea>
+</form>
+<div id=result></div>
+</body>
+</html>

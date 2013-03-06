@@ -1,0 +1,98 @@
+﻿<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+	<script type="text/javascript">
+		function SendToServerExec(data)
+		{
+			console.log(data);
+			$.ajax({
+				type: "POST",
+				processdata: false,
+				url: "/ajax/script/execjy",
+				data: data,
+				dataType: "text",
+				success:function(data){
+					$("#result").html("<pre>"+data+"</pre>");
+				},
+				error:function(jqXHR, textStatus, errorThrown){
+					$("#result").html("<pre>"+errorThrown+"</pre>");
+				}
+			});
+		}
+
+		$().ready(function(){
+			$("form").submit(function(){
+				$("#result").html("<pre>loading................</pre>");
+				SendToServerExec(editor.getValue());
+				return false;
+			});
+		});
+
+	</script>
+</head>
+
+<style type="text/css">
+	body{margin:0;}
+	#result pre{
+		height:40%; 
+		background-color:#F7C1B2; 
+		overflow:scroll;
+	}
+	pre {
+		white-space: pre-wrap; /* css-3 */
+		white-space: -moz-pre-wrap !important; /* Mozilla, since 1999 */
+		white-space: -pre-wrap; /* Opera 4-6 */
+		white-space: -o-pre-wrap; /* Opera 7 */
+		word-wrap: break-word; /* Internet Explorer 5.5+ */
+	}
+
+    body {
+        overflow: hidden;
+    }
+    #editor { 
+        margin: 0;
+        //position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+		height: 50%;
+    }
+</style>
+
+<body>
+<form>
+<input type=submit> jython console
+<div id="editor">import time
+starttime = time.time()
+
+from com.l2jserver.gameserver.model import L2World
+
+for player in L2World.getInstance().getAllPlayersArray():
+	print player
+    
+j = 0
+
+for x in xrange(100):
+    for y in xrange(100):
+        for z in xrange(100):
+            j += 1
+print j
+print time.time() - starttime, "秒"
+
+</div>
+</form>
+<div id=result></div>
+
+<script src="src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/solarized_light");
+    //editor.setTheme("ace/theme/ambiance");
+    //editor.setTheme("ace/theme/eclipse");
+    editor.getSession().setMode("ace/mode/python");
+</script>
+
+</body>
+</html>

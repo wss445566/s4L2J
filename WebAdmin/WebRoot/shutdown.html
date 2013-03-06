@@ -1,0 +1,56 @@
+﻿<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<!--meta http-equiv="refresh" content="60" /-->
+</head>
+
+<style type="text/css">
+</style>
+
+<script type="text/javascript">
+function createXMLHttpRequest(){
+  // See http://en.wikipedia.org/wiki/XMLHttpRequest
+  // Provide the XMLHttpRequest class for IE 5.x-6.x:
+  if( typeof XMLHttpRequest == "undefined" ) XMLHttpRequest = function() {
+    try { return new ActiveXObject("Msxml2.XMLHTTP.6.0") } catch(e) {}
+    try { return new ActiveXObject("Msxml2.XMLHTTP.3.0") } catch(e) {}
+    try { return new ActiveXObject("Msxml2.XMLHTTP") } catch(e) {}
+    try { return new ActiveXObject("Microsoft.XMLHTTP") } catch(e) {}
+    throw new Error( "This browser does not support XMLHttpRequest." )
+  };
+  return new XMLHttpRequest();
+}
+
+var AJAX = createXMLHttpRequest();
+
+function dosubmit(){
+	try {
+		t = parseInt(document.getElementById("s_text").value);
+		s = t>0?t:0;
+		t = parseInt(document.getElementById("m_text").value) * 60;
+		s += t>0?t:0;
+		t = parseInt(document.getElementById("h_text").value) * 60 * 60;
+		s += t>0?t:0;
+		t = parseInt(document.getElementById("d_text").value) * 60 * 60 * 24;
+		s += t>0?t:0;
+	} catch(e) {}
+	AJAX.onreadystatechange = function() {
+		if(AJAX.readyState == 4 && AJAX.status == 200) {
+			var json = eval('(' + AJAX.responseText +')');
+		}else if (AJAX.readyState == 4 && AJAX.status != 200) {
+			alert('Something went wrong...');
+		}
+	};
+	AJAX.open("POST", "/ajax/server/shutdown");
+	AJAX.send(s);
+}
+
+</script>
+
+<body>
+<form action="" method="post" onsubmit="javascript:dosubmit();return false;">
+  關閉伺服器<input id="d_text" type="text" size=2/>日<input id="h_text" type="text" size=2/>時<input id="m_text" type="text" size=2/>分<input id="s_text" type="text" size=2/>秒
+  <input type="submit" value="Submit" />
+</form>
+</body>
+</html>

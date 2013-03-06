@@ -1,0 +1,175 @@
+﻿<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+	<link type="text/css" href="css/smoothness/jquery-ui-1.8.19.custom.css" rel="Stylesheet" />	
+	<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+	<script type="text/javascript" src="js/jquery-ui-1.8.19.custom.min.js"></script>
+	<script type="text/javascript">
+		var gameMinX = -151279;
+		var gameMaxX = 213896;
+		var gameMinY = -250000;
+		var gameMaxY = 250000;
+		var gameMapWidth = gameMaxX - gameMinX;
+		var gameMapHeight = gameMaxY - gameMinY;
+		var mapMinX = 526;
+		var mapMaxX = 2357;
+		var mapMinY = 62;
+		var mapMaxY = 2564;
+		var mapWidth = mapMaxX - mapMinX;
+		var mapHeight = mapMaxY - mapMinY;
+		var mapOffsetX = 561;
+		var mapOffsetY = 62;
+
+		function getScaleX(){
+			return gameMapWidth / mapWidth;
+		}
+		function getScaleY(){
+			return gameMapHeight / mapHeight;
+		}
+		function mapToGameX(x){
+			return parseInt((x - mapOffsetX) * getScaleX() + gameMinX);
+		}
+		function mapToGameY(y){
+			return parseInt((y - mapOffsetY) * getScaleY() + gameMinY);
+		}
+		function gameToMapX(x){
+			return parseInt((x - gameMinX) / getScaleX() + mapOffsetX);
+		}
+		function gameToMapY(y){
+			return parseInt((y - gameMinY) / getScaleY() + mapOffsetY);
+		}
+
+		function highlight_player(objid){
+			$("#player_list>option[value="+objid+"]:selected").each(function(){
+				$("#img_"+this.value).attr({'src':"image/cursor2.png"});
+			});
+			$("#player_list>option[value="+objid+"]:not(:selected)").each(function(){
+				$("#img_"+this.value).attr({'src':"image/cursor.png"});
+			});
+		}
+		
+		function player_teleport(param){
+			$.ajax({
+				type: "GET",
+				url: "/ajax/player/teleport",
+				data: {"objid":param['objid'], "x":param['x'], "y":param['y'], "z":param['z']},
+				success:function(data){
+					player_loc_refresh(param['objid']);
+				}
+			});
+		}
+	
+		function player_loc_refresh(objid){
+			$.ajax({
+				type: "GET",
+				url: "/ajax/player/info",
+				data: {"objid":objid, "req":"x,y"},
+				success:function(data){
+					$("#img_"+objid).css({"left":gameToMapX(data.x)+"px", "top":gameToMapY(data.y)+"px"});
+					if($("#player_list>option[value="+objid+"]:selected").length > 0){
+						$("body").scrollLeft(gameToMapX(data.x)-$("body").width()/2).scrollTop(gameToMapY(data.y)-$("body").height()/2);
+					}
+					highlight_player(objid);
+				}
+			});
+		}
+
+		function player_list_refresh(){
+			$.ajax({
+				type: "GET",
+				url: "/ajax/player/list",
+				data: {"req":"name,x,y"},
+				success:function(data){
+					$("#player_list>option").each(function(){
+						for(objid in data){
+							if(objid == this.value){
+								return true
+							}
+						}
+						$("#img_"+this.value).remove();
+						$(this).remove();
+					});
+					for(objid in data){
+						o = $("#player_list>option[value="+objid+"]") 
+						if(o.length == 0){
+							$("#player_list").append('<option value='+objid+'>'+data[objid].name+'</option>');
+							img = document.createElement("img");
+							img.id = "img_"+objid;
+							img.objid = objid;
+							img.src = "image/cursor.png";
+							img.title = data[objid].name;
+							img.class = "img_player";
+							img.style.position = "absolute";
+							img.style.left = gameToMapX(data[objid].x) + "px";
+							img.style.top = gameToMapY(data[objid].y) + "px";
+							$("#player_pin").append(img);
+							$("#player_pin>#img_"+objid).draggable({
+								stop:function(event, ui){
+									player_teleport({"objid":this.objid, "x":mapToGameX(ui.offset.left), "y":mapToGameY(ui.offset.top), "z":"20000"});
+								}
+							});
+						}else{
+							player_loc_refresh(objid);
+						}						
+					}
+				}
+			});
+		}
+		
+		var auto_refresh_timer;
+		function auto_refresh(){
+			player_list_refresh();
+			auto_refresh_timer = setTimeout("auto_refresh();", 1000 * 5);
+		}
+		
+		$().ready(function(){
+			$("#map1, #map2").click(function(e){
+				$("#player_list>option:selected").each(function(){
+					player_teleport({"objid":this.value, "x":mapToGameX(e.pageX), "y":mapToGameY(e.pageY), "z":"20000"});
+				});
+			});
+			$("#player_list").change(function(){
+				player_list_refresh();
+			});
+			$("#auto_refresh").change(function(){
+				if(this.checked){
+					auto_refresh();
+				}else{
+					clearTimeout(auto_refresh_timer);
+				}
+			});
+			player_list_refresh();
+		});
+	</script>
+</head>
+
+<style type="text/css">
+	body{margin:0;}
+	#map{position:relative; top:0px; left:0px; width:2480px;}
+	#map1{position:absolute; top:1858px; left:0px;}
+	#map2{position:absolute; top:0px; left:500px;}
+	#player_list{width:150px;}
+	#div_player_list{position:fixed; background-color:cccccc;}
+	#clear{clear:both;}
+</style>
+
+<body>
+<div id="map">
+	<div><img id="map1" src="image/l2map1.jpg"></div>
+	<div><img id="map2" src="image/l2map2.jpg"></div>
+	<div id="clear"></div>
+	<div id="player_pin" class="ui-widget-content"></div>
+</div>
+<div id="div_player_list">
+	<input type="checkbox" id="auto_refresh" name="auto_refresh"/>自動更新
+	<a href="javascript:void(0);" onclick="javascript:player_list_refresh();">手動更新</a><BR>
+	<select id="player_list" multiple=true size=20></select>
+	<BR>
+	在列表中選擇玩家(可多選)<BR>
+	然後點擊地圖, 便會傳送<BR>
+	直接拖拉圖標也會傳送<BR>
+	注意 玩家可能會跌死 = =
+<div>
+</body>
+</html>
