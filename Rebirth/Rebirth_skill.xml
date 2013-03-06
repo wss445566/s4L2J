@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<list xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="skills.xsd">
+	<skill id="7033" levels="51" name="轉生-力量">
+		<table name="#mytable"> 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 </table>
+		<set name="target" val="TARGET_SELF" />
+		<set name="skillType" val="NOTDONE" />
+		<set name="operateType" val="P" />
+		<for>
+			<add order="0x10" stat="STR" val="#mytable" />
+		</for>
+	</skill>
+	<skill id="7034" levels="51" name="轉生-敏捷">
+		<table name="#mytable"> 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 </table>
+		<set name="target" val="TARGET_SELF" />
+		<set name="skillType" val="NOTDONE" />
+		<set name="operateType" val="P" />
+		<for>
+			<add order="0x10" stat="DEX" val="#mytable" />
+		</for>
+	</skill>
+	<skill id="7035" levels="51" name="轉生-體質">
+		<table name="#mytable"> 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 </table>
+		<set name="target" val="TARGET_SELF" />
+		<set name="skillType" val="NOTDONE" />
+		<set name="operateType" val="P" />
+		<for>
+			<add order="0x10" stat="CON" val="#mytable" />
+		</for>
+	</skill>
+	<skill id="7036" levels="51" name="轉生-智力">
+		<table name="#mytable"> 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 </table>
+		<set name="target" val="TARGET_SELF" />
+		<set name="skillType" val="NOTDONE" />
+		<set name="operateType" val="P" />
+		<for>
+			<add order="0x10" stat="INT" val="#mytable" />
+		</for>
+	</skill>
+	<skill id="7037" levels="51" name="轉生-智慧">
+		<table name="#mytable"> 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 </table>
+		<set name="target" val="TARGET_SELF" />
+		<set name="skillType" val="NOTDONE" />
+		<set name="operateType" val="P" />
+		<for>
+			<add order="0x10" stat="WIT" val="#mytable" />
+		</for>
+	</skill>
+	<skill id="7038" levels="51" name="轉生-精神">
+		<table name="#mytable"> 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 </table>
+		<set name="target" val="TARGET_SELF" />
+		<set name="skillType" val="NOTDONE" />
+		<set name="operateType" val="P" />
+		<for>
+			<add order="0x10" stat="MEN" val="#mytable" />
+		</for>
+	</skill>
+</list>

@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<list xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../xsd/skills.xsd">
+	<skill id="5995" levels="20" name="自訂-HP 上限">
+		<table name="#mytable"> 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2.0 2.1 2.2 2.3 2.4 2.5 2.6 2.7 2.8 2.9 3.0</table>
+		<set name="target" val="TARGET_SELF" />
+		<set name="skillType" val="NOTDONE" />
+		<set name="operateType" val="P" />
+		<for>
+			<mul order="0x30" stat="maxHp" val="#mytable" />
+		</for>
+	</skill>
+	<skill id="5996" levels="10" name="自訂-MP 上限">
+		<table name="#mytable"> 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2.0 </table>
+		<set name="target" val="TARGET_SELF" />
+		<set name="skillType" val="NOTDONE" />
+		<set name="operateType" val="P" />
+		<for>
+			<mul order="0x30" stat="maxMp" val="#mytable" />
+		</for>
+	</skill>
+	<skill id="5997" levels="20" name="自訂-MP回復率">
+		<table name="#mytable"> 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2.0 2.1 2.2 2.3 2.4 2.5 2.6 2.7 2.8 2.9 3.0</table>
+		<set name="target" val="TARGET_SELF" />
+		<set name="skillType" val="NOTDONE" />
+		<set name="operateType" val="P" />
+		<for>
+			<mul order="0x30" stat="regMp" val="#mytable" />
+		</for>
+	</skill>
+	<skill id="5998" levels="10" name="自訂-物防">
+		<table name="#mytable"> 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2.0 </table>
+		<set name="target" val="TARGET_SELF" />
+		<set name="skillType" val="NOTDONE" />
+		<set name="operateType" val="P" />
+		<for>
+			<mul order="0x30" stat="pDef" val="#mytable" />
+		</for>
+	</skill>
+	<skill id="5999" levels="10" name="自訂-魔防">
+		<table name="#mytable"> 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2.0 </table>
+		<set name="target" val="TARGET_SELF" />
+		<set name="skillType" val="NOTDONE" />
+		<set name="operateType" val="P" />
+		<for>
+			<mul order="0x30" stat="mDef" val="#mytable" />
+		</for>
+	</skill>
+	<skill id="6000" levels="10" name="自訂-物攻">
+		<table name="#mytable"> 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2.0 </table>
+		<set name="target" val="TARGET_SELF" />
+		<set name="skillType" val="NOTDONE" />
+		<set name="operateType" val="P" />
+		<for>
+			<mul order="0x30" stat="pAtk" val="#mytable" />
+		</for>
+	</skill>
+	<skill id="6001" levels="10" name="自訂-魔攻">
+		<table name="#mytable"> 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2.0 </table>
+		<set name="target" val="TARGET_SELF" />
+		<set name="skillType" val="NOTDONE" />
+		<set name="operateType" val="P" />
+		<for>
+			<mul order="0x30" stat="mAtk" val="#mytable" />
+		</for>
+	</skill>
+	<skill id="6002" levels="10" name="自訂-物攻速">
+		<table name="#mytable"> 1.05 1.1 1.15 1.2 1.25 1.3 1.35 1.4 1.45 1.5 </table>
+		<set name="target" val="TARGET_SELF" />
+		<set name="skillType" val="NOTDONE" />
+		<set name="operateType" val="P" />
+		<for>
+			<mul order="0x30" stat="pAtkSpd" val="#mytable" /><!-- 謝 7大 R大 http://www.l2jtw.com/l2jtwbbs/viewtopic.php?f=82&t=11312&start=15#p54132 -->
+		</for>
+	</skill>
+	<skill id="6003" levels="10" name="自訂-魔攻速">
+		<table name="#mytable"> 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2.0 </table>
+		<set name="target" val="TARGET_SELF" />
+		<set name="skillType" val="NOTDONE" />
+		<set name="operateType" val="P" />
+		<for>
+			<mul order="0x30" stat="mAtkSpd" val="#mytable" />
+		</for>
+	</skill>
+	<skill id="6004" levels="10" name="自訂-魔技再用時間">
+		<table name="#mytable"> 0.95 0.9 0.85 0.8 0.75 0.7 0.65 0.6 0.55 0.5 </table>
+		<set name="target" val="TARGET_SELF" />
+		<set name="skillType" val="NOTDONE" />
+		<set name="operateType" val="P" />
+		<for>
+			<mul order="0x30" stat="mReuse" val="#mytable" />
+		</for>
+	</skill>
+	<skill id="6005" levels="10" name="自訂-物爆擊傷害">
+		<table name="#mytable"> 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2.0 </table>
+		<set name="target" val="TARGET_SELF" />
+		<set name="skillType" val="NOTDONE" />
+		<set name="operateType" val="P" />
+		<for>
+			<mul order="0x30" stat="cAtk" val="#mytable" />
+		</for>
+	</skill>
+	<skill id="6006" levels="10" name="自訂-魔爆擊傷害">
+		<table name="#mytable"> 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2.0 </table>
+		<set name="target" val="TARGET_SELF" />
+		<set name="skillType" val="NOTDONE" />
+		<set name="operateType" val="P" />
+		<for>
+			<mul order="0x30" stat="mCritPower" val="#mytable" />
+		</for>
+	</skill>
+	<skill id="6007" levels="10" name="自訂-回避率">
+		<table name="#mytable"> 1 2 3 4 5 6 7 8 9 10 </table>
+		<set name="target" val="TARGET_SELF" />
+		<set name="skillType" val="NOTDONE" />
+		<set name="operateType" val="P" />
+		<for>
+			<add order="0x40" stat="rEvas" val="#mytable" />
+		</for>
+	</skill>
+	<skill id="6008" levels="10" name="自訂-盾防率">
+		<table name="#mytable"> 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2.0 </table>
+		<set name="target" val="TARGET_SELF" />
+		<set name="skillType" val="NOTDONE" />
+		<set name="operateType" val="P" />
+		<for>
+			<mul order="0x30" stat="rShld" val="#mytable" />
+		</for>
+	</skill>
+	<skill id="6009" levels="10" name="自訂-物爆率">
+		<table name="#mytable"> 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2.0 </table>
+		<set name="target" val="TARGET_SELF" />
+		<set name="skillType" val="NOTDONE" />
+		<set name="operateType" val="P" />
+		<for>
+			<mul order="0x30" stat="rCrit" val="#mytable" />
+		</for>
+	</skill>
+	<skill id="6010" levels="10" name="自訂-魔爆率">
+		<table name="#mytable"> 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2.0 </table>
+		<set name="target" val="TARGET_SELF" />
+		<set name="skillType" val="NOTDONE" />
+		<set name="operateType" val="P" />
+		<for>
+			<mul order="0x30" stat="mCritRate" val="#mytable" />
+		</for>
+	</skill>
+	<skill id="6011" levels="10" name="自訂-經驗,SP率">
+		<table name="#mytable"> 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2.0 </table>
+		<set name="target" val="TARGET_SELF" />
+		<set name="skillType" val="NOTDONE" />
+		<set name="operateType" val="P" />
+		<for>
+			<mul order="0x30" stat="rExp" val="#mytable" />
+		</for>
+	</skill>
+	<skill id="6012" levels="10" name="自訂-命中率">
+		<table name="#mytable"> 2 4 6 8 10 12 14 16 18 20 </table>
+		<set name="target" val="TARGET_SELF" />
+		<set name="skillType" val="NOTDONE" />
+		<set name="operateType" val="P" />
+		<for>
+			<add order="0x40" stat="accCombat" val="#mytable" />
+		</for>
+	</skill>
+	<skill id="6013" levels="10" name="自訂-跑速">
+		<table name="#mytable"> 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2.0 </table>
+		<set name="target" val="TARGET_SELF" />
+		<set name="skillType" val="NOTDONE" />
+		<set name="operateType" val="P" />
+		<for>
+			<mul order="0x30" stat="runSpd" val="#mytable" />
+		</for>
+	</skill>
+	<skill id="6014" levels="10" name="自訂-力量">
+		<table name="#mytable"> 1 2 3 4 5 6 7 8 9 10 </table>
+		<set name="target" val="TARGET_SELF" />
+		<set name="skillType" val="NOTDONE" />
+		<set name="operateType" val="P" />
+		<for>
+			<add order="0x40" stat="STR" val="#mytable" />
+		</for>
+	</skill>
+	<skill id="6015" levels="10" name="自訂-體質">
+		<table name="#mytable"> 1 2 3 4 5 6 7 8 9 10 </table>
+		<set name="target" val="TARGET_SELF" />
+		<set name="skillType" val="NOTDONE" />
+		<set name="operateType" val="P" />
+		<for>
+			<add order="0x40" stat="CON" val="#mytable" />
+		</for>
+	</skill>
+	<skill id="6016" levels="10" name="自訂-敏捷">
+		<table name="#mytable"> 1 2 3 4 5 6 7 8 9 10 </table>
+		<set name="target" val="TARGET_SELF" />
+		<set name="skillType" val="NOTDONE" />
+		<set name="operateType" val="P" />
+		<for>
+			<add order="0x40" stat="DEX" val="#mytable" />
+		</for>
+	</skill>
+	<skill id="6017" levels="10" name="自訂-智力">
+		<table name="#mytable"> 1 2 3 4 5 6 7 8 9 10 </table>
+		<set name="target" val="TARGET_SELF" />
+		<set name="skillType" val="NOTDONE" />
+		<set name="operateType" val="P" />
+		<for>
+			<add order="0x40" stat="INT" val="#mytable" />
+		</for>
+	</skill>
+	<skill id="6018" levels="10" name="自訂-智慧">
+		<table name="#mytable"> 1 2 3 4 5 6 7 8 9 10 </table>
+		<set name="target" val="TARGET_SELF" />
+		<set name="skillType" val="NOTDONE" />
+		<set name="operateType" val="P" />
+		<for>
+			<add order="0x40" stat="WIT" val="#mytable" />
+		</for>
+	</skill>
+	<skill id="6025" levels="10" name="自訂-精神">
+		<table name="#mytable"> 1 2 3 4 5 6 7 8 9 10 </table>
+		<set name="target" val="TARGET_SELF" />
+		<set name="skillType" val="NOTDONE" />
+		<set name="operateType" val="P" />
+		<for>
+			<add order="0x40" stat="MEN" val="#mytable" />
+		</for>
+	</skill>
+	<skill id="6026" levels="10" name="自訂-活力消耗率">
+		<table name="#mytable"> 1 2 3 4 5 6 7 8 9 10 </table>
+		<set name="target" val="TARGET_SELF" />
+		<set name="skillType" val="NOTDONE" />
+		<set name="operateType" val="P" />
+		<for>
+			<sub order="0x40" stat="vitalityConsumeRate" val="#mytable" />
+		</for>
+	</skill>
+	<skill id="6027" levels="10" name="自訂-物技再用時間">
+		<table name="#mytable"> 0.95 0.9 0.85 0.8 0.75 0.7 0.65 0.6 0.55 0.5 </table>
+		<set name="target" val="TARGET_SELF" />
+		<set name="skillType" val="NOTDONE" />
+		<set name="operateType" val="P" />
+		<for>
+			<mul order="0x30" stat="pReuse" val="#mytable" />
+		</for>
+	</skill>
+</list>
