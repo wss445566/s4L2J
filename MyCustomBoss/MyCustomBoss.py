@@ -226,7 +226,7 @@ class Quest(JQuest):
 				cx, cy, cz = self.entryLoc
 				for r,s in [(500,10), (900,20), (1300,30)]:
 					for x, y in self.plotCircle(cx, cy, r, s):
-						npc = self.spawnNpc(self.wave1mobid, x, y, -1700, 0, world.instanceId)
+						npc = self.spawnNpc(self.wave1mobid, x, y, cz, 0, world.instanceId)
 				self.startQuestTimer("s1s2 %d" % world.instanceId, self.timetos1s2, None, None, False)
 			return
 			
