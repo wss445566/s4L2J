@@ -37,7 +37,12 @@ class EasySkillLearn(JQuest):
 		r += '<a action="bypass -h Quest %s learn_all">¥þ³¡¾Ç²ß</a><br1>' % self.qn
 		for s in sl:
 			if s and s.getName():
-				r += "<a action=\"bypass -h Quest " + self.qn + " learn " + str(s.getSkillId()) + " " + str(s.getSkillLevel()) + "\">" + s.getName() + " Lv " + str(s.getSkillLevel()) + "</a><BR1>"
+				ss = SkillTable.getInstance().getInfo(s.getSkillId(), s.getSkillLevel())
+				if ss:
+					sn = ss.getName()
+				else:
+					sn = s.getName()
+				r += "<a action=\"bypass -h Quest " + self.qn + " learn " + str(s.getSkillId()) + " " + str(s.getSkillLevel()) + "\">" + sn + " Lv " + str(s.getSkillLevel()) + "</a><BR1>"
 		return r
 
 	def myAddSkill(self, player, id):
