@@ -56,8 +56,8 @@ class EasySkillLearn(JQuest):
 				else:
 					return 1
 				if oldSkill == player.getKnownSkill(id):
-					print self.qn, player, "學習技能錯誤", id, s.getName()
-					player.sendMessage("學習技能錯誤 %s" % s.getName())
+					print self.qn, player, "學習技能錯誤", id, newskill.getName()
+					player.sendMessage("學習技能錯誤 %s" % newskill.getName())
 					return 1
 				self.myAddSkill(player, id)
 				break
