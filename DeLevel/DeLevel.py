@@ -2,7 +2,7 @@ from com.l2jserver.gameserver.model.quest.jython import QuestJython as JQuest
 
 class Quest(JQuest):
 	qID = -1
-	qn = "MyCustomBoss"
+	qn = "DeLevel"
 	qDesc = "custom"
 	NPCID = 100 #設定觸發的 NPC ID
 	
