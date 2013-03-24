@@ -12,12 +12,12 @@ class Quest(JQuest):
 	htm_header = """<html><title>单竲セ</title><body>"""
 	htm_footer = """</body></html>"""
 	
-	htm_intro = """块饼单ぶ<br>块絛瞅 程蔼 %d 程 %d <BR>礛 单 硈挡/秙 絋粄 """ % (min_level, max_level)
+	htm_intro = """块饼单ぶ<br>块絛瞅 程 %d 程蔼 %d <BR>礛 单 硈挡/秙 絋粄 """ % (min_level, max_level)
 	htm_input = """<edit var="value"><a action="bypass -h Quest %s show_confirm $value">璶―单</a>""" % qn
 	htm_confirm = """<a action="bypass -h Quest %s confirm %d">絋粄单 %d </a>"""
 	htm_level_error = """块单岿粇.<BR> 叫块ゑ单耕单ㄓ单. """
 	htm_delevel_done = """单ЧΘ"""
-	htm_level_outOfRange = """单块计 禬絛瞅 程蔼 %d 程 %d """ % (min_level, max_level)
+	htm_level_outOfRange = """单块计 禬絛瞅 程 %d 程蔼 %d """ % (min_level, max_level)
 	
 	def __init__(self, id = qID, name = qn, descr = qDesc):
 		self.qID, self.qn, self.qDesc = id, name, descr
