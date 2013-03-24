@@ -50,16 +50,16 @@ class EasyEnchance(JQuest):
 	qn = "easyEnchant"
 	qDesc = "custom"
 	
-	maxWpEnchantLevel = 300 #武器強化上限
-	maxAmEnchantLevel = 300 #防具強化上限
-	maxRenEnchantLevel = 300 #飾品強化上限
+	maxWpEnchantLevel = 300 #武器強化上限 (腳本上限, 不是系統上限)
+	maxAmEnchantLevel = 300 #防具強化上限 (腳本上限, 不是系統上限)
+	maxRenEnchantLevel = 300 #飾品強化上限 (腳本上限, 不是系統上限)
 	
-	canEnchantZero = True #強化失敗 會否歸 0
-	canDestory = True #強化失敗 會否變結晶
+	canEnchantZero = True #祝福強化卷強化失敗 會否歸 0
+	canDestory = True #一般強化卷強化失敗 會否變結晶
 	
 	isEnchantToSafe = True #是否自動強化至安定值
 	
-	enchant_lv_notify = [10,20,30,40,50] #強化成功後 指定等級才廣播文字訊息給其他玩家
+	enchant_lv_notify = [10,20,30,40,50] + range(60,100,10) #強化成功後 指定等級才廣播文字訊息給其他玩家
 	canFireWorks = True #廣播時是否放煙火
 
 	# 武卷 D 955 C 951 B 947 A 729 S 959
@@ -71,7 +71,7 @@ class EasyEnchance(JQuest):
 	
 	command_split_char = "_#_"
 	
-	NPCID = [102] #觸發任務的 NPC 可修改.. 可以多 ID 例如 [100,102,103]
+	NPCID = [100] #觸發任務的 NPC 可修改.. 可以多 ID 例如 [100,102,103]
 	htm_header = "<html><body><title>簡易強化</title>"
 	htm_footer = "</body></html>"
 
@@ -82,8 +82,12 @@ class EasyEnchance(JQuest):
 	htm_menu_list_b = "<tr><td>B級</td><td><a action=\"bypass -h Quest %(qn)s list +gb +wp\">武器</a></td><td><a action=\"bypass -h Quest %(qn)s list +gb +am -ren\">防具</a></td><td><a action=\"bypass -h Quest %(qn)s list +gb +ren\">飾品</a></td><td><a action=\"bypass -h Quest %(qn)s list +gb\">全部</a></td></tr>" % {"qn":qn}
 	htm_menu_list_a = "<tr><td>A級</td><td><a action=\"bypass -h Quest %(qn)s list +ga +wp\">武器</a></td><td><a action=\"bypass -h Quest %(qn)s list +ga +am -ren\">防具</a></td><td><a action=\"bypass -h Quest %(qn)s list +ga +ren\">飾品</a></td><td><a action=\"bypass -h Quest %(qn)s list +ga\">全部</a></td></tr>" % {"qn":qn}
 	htm_menu_list_s = "<tr><td>S級</td><td><a action=\"bypass -h Quest %(qn)s list +gs +wp\">武器</a></td><td><a action=\"bypass -h Quest %(qn)s list +gs +am -ren\">防具</a></td><td><a action=\"bypass -h Quest %(qn)s list +gs +ren\">飾品</a></td><td><a action=\"bypass -h Quest %(qn)s list +gs\">全部</a></td></tr>" % {"qn":qn}
+	htm_menu_list_r = "<tr><td>R級</td><td><a action=\"bypass -h Quest %(qn)s list +gr +wp\">武器</a></td><td><a action=\"bypass -h Quest %(qn)s list +gr +am -ren\">防具</a></td><td><a action=\"bypass -h Quest %(qn)s list +gr +ren\">飾品</a></td><td><a action=\"bypass -h Quest %(qn)s list +gr\">全部</a></td></tr>" % {"qn":qn}
 	htm_menu_list_all = "<tr><td>不限級</td><td><a action=\"bypass -h Quest %(qn)s list +wp\">武器</a></td><td><a action=\"bypass -h Quest %(qn)s list +am -ren\">防具</a></td><td><a action=\"bypass -h Quest %(qn)s list +ren\">飾品</a></td><td><a action=\"bypass -h Quest %(qn)s list\">全部</a></td></tr>" % {"qn":qn}
-	htm_menu = htm_menu_search + "列出角色身上可強化物品<BR><table cellspacing=5>" + htm_menu_list_n + htm_menu_list_d + htm_menu_list_c + htm_menu_list_b + htm_menu_list_a + htm_menu_list_s + htm_menu_list_all + "</table>"
+	#芙蕾雅
+	#htm_menu = htm_menu_search + "列出角色身上可強化物品<BR><table cellspacing=5>" + htm_menu_list_n + htm_menu_list_d + htm_menu_list_c + htm_menu_list_b + htm_menu_list_a + htm_menu_list_s + htm_menu_list_all + "</table>"
+	#塔武提
+	htm_menu = htm_menu_search + "列出角色身上可強化物品<BR><table cellspacing=5>" + htm_menu_list_d + htm_menu_list_c + htm_menu_list_b + htm_menu_list_a + htm_menu_list_s + htm_menu_list_r + htm_menu_list_all + "</table>"
 	htm_intro = "簡介<BR>只會列出角色身上所有強化卷軸可強化之物品<BR1>卷軸下方數字為成功機率及剩餘卷軸數量<BR1>點擊直接強化<BR1>強化成功機率與失敗結果與手動強化相同<BR1>" + htm_menu
 	
 	def firstpage(self, **kv):
@@ -133,6 +137,7 @@ class EasyEnchance(JQuest):
 				if e == "+gb" and not ct == L2Item.CRYSTAL_B: return False
 				if e == "+ga" and not ct == L2Item.CRYSTAL_A: return False
 				if e == "+gs" and not ct in [L2Item.CRYSTAL_S,L2Item.CRYSTAL_S80,L2Item.CRYSTAL_S84]: return False
+				if e == "+gr" and not ct in [L2Item.CRYSTAL_R,L2Item.CRYSTAL_R95,L2Item.CRYSTAL_R99]: return False
 				if not e[0] in ["+", "-"] and not e in self.itemNameTable.getName(item.getItemId()): return False
 			if item.isWeapon() and item.getEnchantLevel() >= self.maxWpEnchantLevel: return False
 			if item.isArmor():
@@ -290,6 +295,7 @@ class EasyEnchance(JQuest):
 	htm_commands = {"list":list_item, "enchant":process_enchant}
 	
 	def __init__(self, id = qID, name = qn, descr = qDesc):
+		self.qID, self.qn, self.qDesc = id, name, descr
 		JQuest.__init__(self, id, name, descr)
 		for id in self.NPCID:
 			self.addStartNpc(id)
@@ -311,10 +317,6 @@ class EasyEnchance(JQuest):
 		return r
 		
 	def onFirstTalk(self, npc, player):
-		st = player.getQuestState(self.qn)
-		if not st:
-			st = self.newQuestState(player)
-			st.setState(State.STARTED)
 		return self.firstpage()
 		
 EasyEnchance()
