@@ -40,7 +40,7 @@ class Quest(JQuest):
 	html_disappear = "地上的物品將於 %d 秒後消失(部份物品除外)<br1>" % (Config.AUTODESTROY_ITEM_AFTER,)
 	html_drop_all = """<a action="bypass -h Quest %(qn)s drop">點擊掉落背包內所有物品</a><br1>""" % {"qn":qn}
 	html_drop_quest = """<a action="bypass -h Quest %(qn)s delQuestItems">點擊刪除所有任務道具</a><br1>""" % {"qn":qn}
-	html_foreach_item = """<tr><td><a action="bypass -h Quest %(qn)s dropone %(itemid)d">掉落</a></td><td><a action="bypass -h Quest %(qn)s delone %(itemid)d">刪除</a></td><td>%(itemname)s</td></tr><br1>"""
+	html_foreach_item = """<tr><td><a action="bypass -h Quest %(qn)s dropone %(itemid)d %(page)d">掉落</a></td><td><a action="bypass -h Quest %(qn)s delone %(itemid)d %(page)d">刪除</a></td><td>%(itemname)s</td></tr><br1>"""
 	html_prev_page = """<a action="bypass -h Quest %s list %d">上一頁</a>"""
 	html_next_page = """<a action="bypass -h Quest %s list %d">下一頁</a>"""
 	html_drop_one_intro = "以下連結 點擊掉落<br1>"
@@ -54,7 +54,8 @@ class Quest(JQuest):
 		print "Init:" + self.qn + " loaded"
 
 	def onFirstTalk(self, npc, player):
-		return self.html_header + self.html_drop_all + self.html_drop_quest + self.list(player) + self.html_footer
+		return self.showPage(player, 1)
+		#return self.html_header + self.html_drop_all + self.html_drop_quest + self.list(player) + self.html_footer
 
 	def onAdvEvent(self, event, npc, player):
 		if event == "delQuestItems":
@@ -62,9 +63,17 @@ class Quest(JQuest):
 		if event == "drop":
 			return self.drop(player)
 		if event.startswith("dropone "):
-			return self.dropone(npc, player, int(event[8:]))
+			try:
+				dummy, oid, page = event.split()
+			except:
+				return
+			return self.dropone(npc, player, int(oid), int(page))
 		if event.startswith("delone "):
-			return self.delone(npc, player, int(event[7:]))
+			try:
+				dummy, oid, page = event.split()
+			except:
+				return
+			return self.delone(npc, player, int(oid), int(page))
 		if event.startswith("list "):
 			try:
 				page = int(event[len("list "):])
@@ -72,15 +81,20 @@ class Quest(JQuest):
 				return
 			return self.html_header + self.html_drop_all + self.html_drop_quest + self.list(player, page) + self.html_footer
 
-	def dropone(self, npc, player, oid):
+	def showPage(self, player, page=1):
+		return self.html_header + self.html_drop_all + self.html_drop_quest + self.list(player, page) + self.html_footer
+			
+	def dropone(self, npc, player, oid, page=1):
 		item = player.getInventory().getItemByObjectId(oid)
 		player.dropItem(self.qn, item, None, False, True)
-		return self.onFirstTalk(npc, player)
+		return self.showPage(player, page)
+		#return self.onFirstTalk(npc, player)
 
-	def delone(self, npc, player, oid):
+	def delone(self, npc, player, oid, page=1):
 		item = player.getInventory().getItemByObjectId(oid)
 		player.destroyItem(self.qn, item, None, True)
-		return self.onFirstTalk(npc, player)
+		return self.showPage(player, page)
+		#return self.onFirstTalk(npc, player)
 		
 	def check(self, item):
 		if item.getItemId() in self.whiteList: return False
@@ -118,7 +132,7 @@ class Quest(JQuest):
 		startItemIndex = (page-1) * self.itemsPerPage
 		for item in [x for x in player.getInventory().getItems() if self.check(x)]:
 			if startItemIndex <= index < startItemIndex + self.itemsPerPage:
-				r = r + self.html_foreach_item % {"qn":self.qn, "itemname":item.getName(), "itemid":item.getObjectId()}
+				r = r + self.html_foreach_item % {"qn":self.qn, "itemname":item.getName(), "itemid":item.getObjectId(), "page":page}
 			index = index + 1
 		r = r + "</table>"
 		return r
