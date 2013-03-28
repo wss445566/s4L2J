@@ -19,25 +19,30 @@ class Quest(JQuest):
 	whiteList += [1458, 1459, 1460, 1461, 1462, 17371]
 	
 	#允許 武器 列出/掉落/刪除
-	isAllowWeaponDrop = False
+	isAllowWeaponDrop = True
 	#允許 防具 列出/掉落/刪除
-	isAllowArmorDrop = False
+	isAllowArmorDrop = True
 	#允許 強化卷 列出/掉落/刪除
-	isAllowScrollEnchanceDrop = False
+	isAllowScrollEnchanceDrop = True
 	#允許 含技能道具 列出/掉落/刪除
-	isAllowHasSkillItemDrop = False
+	isAllowHasSkillItemDrop = True
 	
 	
 	#檢測物品可否掉落屬性
 	checkDropable = True #False
 	
+	#一頁列出多少物品
+	itemsPerPage = 10
+	
 	html_header = "<html><body><title>清空背包物品</title>"
 	html_footer = "</body></html>"
 	html_after_drop = "你有 15秒 優先權 撿回物品<br1>"
 	html_disappear = "地上的物品將於 %d 秒後消失(部份物品除外)<br1>" % (Config.AUTODESTROY_ITEM_AFTER,)
-	html_drop_all = """<a action="bypass -h Quest %(qn)s drop">點擊掉落背包內以下列出物品</a><br1>""" % {"qn":qn}
+	html_drop_all = """<a action="bypass -h Quest %(qn)s drop">點擊掉落背包內所有物品</a><br1>""" % {"qn":qn}
 	html_drop_quest = """<a action="bypass -h Quest %(qn)s delQuestItems">點擊刪除所有任務道具</a><br1>""" % {"qn":qn}
 	html_foreach_item = """<tr><td><a action="bypass -h Quest %(qn)s dropone %(itemid)d">掉落</a></td><td><a action="bypass -h Quest %(qn)s delone %(itemid)d">刪除</a></td><td>%(itemname)s</td></tr><br1>"""
+	html_prev_page = """<a action="bypass -h Quest %s list %d">上一頁</a>"""
+	html_next_page = """<a action="bypass -h Quest %s list %d">下一頁</a>"""
 	html_drop_one_intro = "以下連結 點擊掉落<br1>"
 	
 	def __init__(self, id = qID, name = qn, descr = qDesc):
@@ -60,6 +65,12 @@ class Quest(JQuest):
 			return self.dropone(npc, player, int(event[8:]))
 		if event.startswith("delone "):
 			return self.delone(npc, player, int(event[7:]))
+		if event.startswith("list "):
+			try:
+				page = int(event[len("list "):])
+			except:
+				return
+			return self.html_header + self.html_drop_all + self.html_drop_quest + self.list(player, page) + self.html_footer
 
 	def dropone(self, npc, player, oid):
 		item = player.getInventory().getItemByObjectId(oid)
@@ -96,13 +107,19 @@ class Quest(JQuest):
 		return self.onFirstTalk(npc, player)
 		
 		
-	def list(self, player):
+	def list(self, player, page=1):
 		r = self.html_drop_one_intro
+		if page > 1:
+			r += self.html_prev_page % (self.qn, page - 1)
+		r += " 第 %d 頁 " % page
+		r += self.html_next_page % (self.qn, page + 1)
 		r = r + "<table>"
+		index = 0
+		startItemIndex = (page-1) * self.itemsPerPage
 		for item in [x for x in player.getInventory().getItems() if self.check(x)]:
-			r = r + self.html_foreach_item % {"qn":self.qn, "itemname":item.getName(), "itemid":item.getObjectId()}
+			if startItemIndex <= index < startItemIndex + self.itemsPerPage:
+				r = r + self.html_foreach_item % {"qn":self.qn, "itemname":item.getName(), "itemid":item.getObjectId()}
+			index = index + 1
 		r = r + "</table>"
 		return r
-
-		
 Quest()
