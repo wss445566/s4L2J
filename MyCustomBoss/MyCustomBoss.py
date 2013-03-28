@@ -330,7 +330,9 @@ class Quest(JQuest):
 		player.setInstanceId(instanceId);
 		player.teleToLocation(*self.entryLoc);
 		if player.getPet():
-			self.teleport(player.getPet(), instanceId)
+			player.getPet().getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE)
+			player.getPet().setInstanceId(instanceId);
+			player.getPet().teleToLocation(*self.entryLoc);
 
 	def broadcastScreenMessage(self, instanceId, message, duration = 10000):
 		Broadcast.toPlayersInInstance(ExShowScreenMessage(message, duration), instanceId)
