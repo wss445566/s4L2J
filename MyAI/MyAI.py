@@ -1,3 +1,4 @@
+import sys
 from com.l2jserver.gameserver.ai import L2CharacterAI
 from com.l2jserver.gameserver.model.actor.L2Character import AIAccessor
 from com.l2jserver.gameserver.ai import CtrlIntention
@@ -7,31 +8,15 @@ npc29191 = 29191 #歐塔比斯
 npc29192 = 29192 #歐塔比斯野獸
 
 class MyAI29191(L2CharacterAI):#歐塔比斯
+	horse = None
 	def __init__(self, accessor):
 		L2CharacterAI.__init__(self, accessor)
 		
 	def onEvtThink(self):
+		if self.getIntention() == CtrlIntention.AI_INTENTION_ACTIVE:
+			self.setIntention(CtrlIntention.AI_INTENTION_FOLLOW, self.getTarget())
 		pass
-		
 	def onEvtAttacked(self, attacker):
-		pass
-		
-
-class MyAI29192(L2CharacterAI):#歐塔比斯野獸
-	runningCircleIndex = 0
-	runningCircleSteps = 36
-	radius = 1000
-	circlePoint = None
-	npc = None
-	def __init__(self, accessor):
-		L2CharacterAI.__init__(self, accessor)
-		self.npc = self.getActor()
-		if self.npc.getNpcId() == npc29192:
-			s = self.npc.getSpawn()
-			self.circlePoint = self.plotCircle(s.getLocx(), s.getLocy(), self.radius, self.runningCircleSteps)
-			self.onEvtThink()
-		
-	def onEvtArrived(self):
 		pass
 	def onEvtCancel(self):
 		pass
@@ -51,6 +36,24 @@ class MyAI29192(L2CharacterAI):#歐塔比斯野獸
 		pass
 	def onEvtAttacked(self, attacker):
 		pass
+	#def onEvtArrived(self):
+	#	print sys._getframe().f_code.co_name
+	#	pass
+		
+
+class MyAI29192(L2CharacterAI):#歐塔比斯野獸
+	runningCircleIndex = 0
+	runningCircleSteps = 36
+	radius = 500
+	circlePoint = None
+	npc = None
+	def __init__(self, accessor):
+		L2CharacterAI.__init__(self, accessor)
+		self.npc = self.getActor()
+		if self.npc.getNpcId() == npc29192:
+			s = self.npc.getSpawn()
+			self.circlePoint = self.plotCircle(s.getLocx(), s.getLocy(), self.radius, self.runningCircleSteps)
+			self.onEvtThink()
 		
 	def onEvtArrived(self):
 		if self.npc.getNpcId() == npc29192:
