@@ -18,6 +18,7 @@ class VCPlayerAnno(IVoicedCommandHandler):
 		if not inv: return
 		ditem = inv.destroyItemByItemId("vcplayeranno", self.requireItemId, self.requireItemCount, player, None) 
 		if ditem:
+			player.sendMessage("®ø¯Ó¤F %s %d ­Ó" % (ditem.getName(), self.requireItemCount))
 			Announcements.getInstance().announceToAll("%s:%s" % (player.getName(), params[:self.messageLength]), self.isCritical)
 			iu = InventoryUpdate()
 			iu.addModifiedItem(ditem)
