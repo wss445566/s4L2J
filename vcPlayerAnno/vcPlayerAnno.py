@@ -6,8 +6,9 @@ from com.l2jserver.gameserver import Announcements
 
 class VCPlayerAnno(IVoicedCommandHandler):
 	isCritical = True #是否為重要公告形式顯示
-	requireItemId = 57
-	requireItemCount = 100
+	requireItemId = 57 #需求道具 ID
+	requireItemCount = 100 #需求道具數量
+	messageLength = 50 #訊息長度限制
 
 	commands = ["公告"]
 	
@@ -17,7 +18,7 @@ class VCPlayerAnno(IVoicedCommandHandler):
 		if not inv: return
 		ditem = inv.destroyItemByItemId("vcplayeranno", self.requireItemId, self.requireItemCount, player, None) 
 		if ditem:
-			Announcements.getInstance().announceToAll("%s:%s" % (player.getName(), params), self.isCritical)
+			Announcements.getInstance().announceToAll("%s:%s" % (player.getName(), params[:self.messageLength]), self.isCritical)
 			iu = InventoryUpdate()
 			iu.addModifiedItem(ditem)
 			player.sendPacket(iu)
