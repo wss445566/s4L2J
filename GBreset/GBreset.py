@@ -81,6 +81,19 @@ class GBreset(JQuest):
 		if qs:
 			qs.setState(State.STARTED);
 			qs.exitQuest(True)
+			if quest_name == "10286_ReunionWithSirra":
+				q = QuestManager.getInstance().getQuest("10286_ReunionWithSirra")
+				st = player.getQuestState(quest_name)
+				if not st:
+					st = q.newQuestState(player)
+					st.setState(State.STARTED)
+				st.set("cond", "1")
+				st.set("cond", "2")
+				st.set("cond", "3")
+				st.set("cond", "4")
+				st.set("cond", "5")
+				st.set("Ex", "2")
+				st.set("progress", "2")
 
 	gb_list = dict({
 	29001:["¥¨ÃÆ¤k¤ý", [available, dead], [general_unlock, "queen_ant", "queen_unlock"]], 
