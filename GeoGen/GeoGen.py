@@ -357,7 +357,7 @@ class Quest(JQuest):
 				print "no job"
 				self.saveLastZ()
 				#self.doneBBlock = [0]*1
-				doneBBlock = [0]*16*16
+				self.doneBBlock = [0]*16*16
 				doneCount = 0
 				for by in xrange(256):
 					for bx in xrange(256):
