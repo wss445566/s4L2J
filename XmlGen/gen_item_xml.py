@@ -197,7 +197,7 @@ def process_weapongrp(weapongrp, root):
                 item
                 , icon=f[22]
                 , weight=f[28]
-                , default_actionicon='equip'
+                , default_action='equip'
             )
             if int(f[27]) > 0:
                 addSetNode(item, duration=f[27])
@@ -243,7 +243,7 @@ def process_armorgrp(armorgrp, root):
                 item
                 , icon=f[22]
                 , weight=f[28]
-                , default_actionicon='equip'
+                , default_action='equip'
             )
             if int(f[27]) > 0:
                 addSetNode(item, duration=f[27])
@@ -288,7 +288,7 @@ def process_etcitemgrp(etcitemgrp, root):
             addSetNode(
                 item
                 , icon=f[22]
-                #, default_actionicon='equip'
+                #, default_action='equip'
             )
             if int(f[27]) > 0:
                 addSetNode(item, duration=f[27])
@@ -325,42 +325,51 @@ def process_itemstatdata(itemstatdata, root):
             if fornode is None:
                 fornode = ET.SubElement(item, 'for')
             if not float(f[1]) == 0:
-                ET.SubElement(fornode, 'add', attrib={'order':'0x10','stat':'pDef','val':"%0.2f" % float(f[1])})
+                ET.SubElement(fornode, 'add', attrib={'order':'0x10','stat':'pDef','val':"%0.0f" % float(f[1])})
                 if enchant_enable:
                     ET.SubElement(fornode, 'enchant', attrib={'order':'0x0C','stat':'pDef','val':'0'})
             if not float(f[2]) == 0:
-                ET.SubElement(fornode, 'add', attrib={'order':'0x10','stat':'mDef','val':"%0.2f" % float(f[2])})
+                ET.SubElement(fornode, 'add', attrib={'order':'0x10','stat':'mDef','val':"%0.0f" % float(f[2])})
                 if enchant_enable:
                     ET.SubElement(fornode, 'enchant', attrib={'order':'0x0C','stat':'mDef','val':'0'})
             if not float(f[3]) == 0:
-                ET.SubElement(fornode, 'set', attrib={'order':'0x08','stat':'pAtk','val':"%0.2f" % float(f[3])})
+                ET.SubElement(fornode, 'set', attrib={'order':'0x08','stat':'pAtk','val':"%0.0f" % float(f[3])})
                 if enchant_enable:
                     ET.SubElement(fornode, 'enchant', attrib={'order':'0x0C','stat':'pAtk','val':'0'})
             if not float(f[4]) == 0:
-                ET.SubElement(fornode, 'set', attrib={'order':'0x08','stat':'mAtk','val':"%0.2f" % float(f[4])})
+                ET.SubElement(fornode, 'set', attrib={'order':'0x08','stat':'mAtk','val':"%0.0f" % float(f[4])})
                 if enchant_enable:
                     ET.SubElement(fornode, 'enchant', attrib={'order':'0x0C','stat':'mAtk','val':'0'})
             if not float(f[6]) == 0:
-                ET.SubElement(fornode, 'set', attrib={'order':'0x08','stat':'pAtkSpd','val':"%0.2f" % float(f[6])})
+                ET.SubElement(fornode, 'set', attrib={'order':'0x08','stat':'pAtkSpd','val':"%0.0f" % float(f[6])})
             if not float(f[7]) == 0:
                 if float(f[7]) > 0:
                     ET.SubElement(fornode, 'add', attrib={'order':'0x10','stat':'accCombat','val':"%0.2f" % float(f[7])})
                 else:
                     ET.SubElement(fornode, 'sub', attrib={'order':'0x10','stat':'accCombat','val':"%0.2f" % abs(float(f[7]))})
             if not float(f[9]) == 0:
-                ET.SubElement(fornode, 'set', attrib={'order':'0x08','stat':'rCrit','val':"%0.2f" % float(f[9])})
+                ET.SubElement(fornode, 'set', attrib={'order':'0x08','stat':'rCrit','val':"%0.0f" % float(f[9])})
             if not float(f[12]) == 0:
-                ET.SubElement(fornode, 'set', attrib={'order':'0x08','stat':'sDef','val':"%0.2f" % float(f[12])})
+                ET.SubElement(fornode, 'set', attrib={'order':'0x08','stat':'sDef','val':"%0.0f" % float(f[12])})
                 if enchant_enable:
                     ET.SubElement(fornode, 'enchant', attrib={'order':'0x0C','stat':'sDef','val':'0'})
             if not float(f[13]) == 0:
-                ET.SubElement(fornode, 'set', attrib={'order':'0x08','stat':'rShld','val':"%0.2f" % float(f[13])})
+                ET.SubElement(fornode, 'set', attrib={'order':'0x08','stat':'rShld','val':"%0.0f" % float(f[13])})
             if not float(f[14]) == 0:
-                ET.SubElement(fornode, 'add', attrib={'order':'0x10','stat':'rEvas','val':"%0.2f" % float(f[14])})
+                if float(f[14]) > 0:
+                    ET.SubElement(fornode, 'add', attrib={'order':'0x10','stat':'rEvas','val':"%0.0f" % float(f[14])})
+                else:
+                    ET.SubElement(fornode, 'sub', attrib={'order':'0x10','stat':'rEvas','val':"%0.0f" % abs(float(f[14]))})
             if len(fornode) == 0:
                 item.remove(fornode)
             
-
+def writeXML(startid, list_element):
+    startid = "000%d00" % (int(startid)/100)
+    endid = "000%d99" % (int(startid)/100)
+    filename = "%s-%s.xml" % (startid[-5:], endid[-5:])
+    with codecs.open(filename, 'w') as o:
+        o.write(parseString(ET.tostring(list_element, 'UTF-8')).toprettyxml(encoding='UTF-8'))
+    
 root = {}
 process_itemname(Itemname(), root)
 process_etcitemgrp(Etcitemgrp(), root)
@@ -368,9 +377,13 @@ process_armorgrp(Armorgrp(), root)
 process_weapongrp(Weapongrp(), root)
 process_itemstatdata(Itemstatdata(), root)
 
-list_element = ET.Element('list')
+list_element = ET.Element('list', attrib={"xmlns:xsi":"http://www.w3.org/2001/XMLSchema-instance", "xsi:noNamespaceSchemaLocation":"../../../xsd/items.xsd"})
+rstart = 0
 for key in sorted(root.keys()):
+    if key > rstart + 99:
+        writeXML(rstart, list_element)
+        rstart = key
+        list_element = ET.Element('list', attrib={"xmlns:xsi":"http://www.w3.org/2001/XMLSchema-instance", "xsi:noNamespaceSchemaLocation":"../../../xsd/items.xsd"})
     if len(root[key]) > 0:
         list_element.append(root[key])
-with codecs.open(r'__predefine.xml', 'w', 'utf8') as o:
-    o.write(parseString(ET.tostring(list_element, 'UTF-8')).toprettyxml())
+writeXML(rstart, list_element)
