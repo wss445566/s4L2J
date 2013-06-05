@@ -185,12 +185,18 @@ def process_itemname(itemname, root):
         item.set('name', f[1])
             
 def process_weapongrp(weapongrp, root):
+    debug = True
+    debug = False
     for key in weapongrp.f:
         if not key in root:
             root[key] = ET.Element('item', attrib={'id':str(key),'name':'unknow'})
             print "warning weapongrp ", key
         item = root[key]
         f = weapongrp.f[key]
+        if debug:
+            debug=False
+            for x in xrange(len(f)):
+                print x, f[x], weapongrp.title[x]
         item.set('type', u'Weapon')
         addSetNode(
             item
@@ -213,20 +219,20 @@ def process_weapongrp(weapongrp, root):
                 , is_questitem="true")
         if f[38] in bodypart:
             addSetNode(item, bodypart=bodypart[f[38]])
-        if not f[58] == '0':
-            addSetNode(item, random_damage=f[58])
-        if f[59] in weapon_type:
-            addSetNode(item, weapon_type=weapon_type[f[59]])
-        if f[60] in crystal_type:
-            if not f[60] == '0':
-                addSetNode(item, crystal_type=crystal_type[f[60]], crystal_count="1")
-        if int(f[61]) > 0:
-            addSetNode(item, mp_consume=f[61])
-        if int(f[62]) > 0:
-            addSetNode(item, soulshots=f[62])
-        if int(f[63]) > 0:
-            addSetNode(item, spiritshots=f[63])
-        if int(f[66]) > 0:
+        if not f[50] == '0':
+            addSetNode(item, random_damage=f[50])
+        if f[51] in weapon_type:
+            addSetNode(item, weapon_type=weapon_type[f[51]])
+        if f[52] in crystal_type:
+            if not f[52] == '0':
+                addSetNode(item, crystal_type=crystal_type[f[52]], crystal_count="1")
+        if int(f[53]) > 0:
+            addSetNode(item, mp_consume=f[53])
+        if int(f[54]) > 0:
+            addSetNode(item, soulshots=f[54])
+        if int(f[55]) > 0:
+            addSetNode(item, spiritshots=f[55])
+        if int(f[58]) > 0:
             setE = ET.SubElement(item, 'cond', attrib={'msgId':'1518'})
             ET.SubElement(setE, 'player', attrib={'isHero':'true'})
                 
@@ -277,12 +283,18 @@ def process_armorgrp(armorgrp, root):
             #    print x, f[x], armorgrp.title[x]
 
 def process_etcitemgrp(etcitemgrp, root):
+    debug = True
+    debug = False
     for key in etcitemgrp.f:
         if not key in root:
             root[key] = ET.Element('item', attrib={'id':str(key),'name':'unknow'})
             print "warning etcitemgrp ", key
         item = root[key]
         f = etcitemgrp.f[key]
+        if debug:
+            debug=False
+            for x in xrange(len(f)):
+                print x, f[x], etcitemgrp.title[x]
         item.set('type', u'EtcItem')
         addSetNode(
             item
@@ -304,13 +316,13 @@ def process_etcitemgrp(etcitemgrp, root):
                 , is_sellable="false"
                 , is_depositable="false"
                 , is_questitem="true")
-        if not f[53] == '0':
+        if not f[44] == '0':
             addSetNode(item, is_stackable='true')
-        if f[54] in etcitem_type:
-            addSetNode(item, etcitem_type=etcitem_type[f[54]])
-        if f[55] in crystal_type:
-            if not f[55] == '0':
-                addSetNode(item, crystal_type=crystal_type[f[55]], crystal_count="1")
+        if f[45] in etcitem_type:
+            addSetNode(item, etcitem_type=etcitem_type[f[45]])
+        if f[46] in crystal_type:
+            if not f[46] == '0':
+                addSetNode(item, crystal_type=crystal_type[f[46]], crystal_count="1")
 
 def process_itemstatdata(itemstatdata, root):
     for key in itemstatdata.f:
