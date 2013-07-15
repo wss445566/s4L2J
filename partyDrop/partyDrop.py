@@ -11,7 +11,8 @@ class Quest(JQuest):
 	[57,1,100,50]
 	,[57,2000,3000,99]
 	]
-	isSendMessage = True
+	isSendMessage = False
+	#isSendMessage = True
 
 	def __init__(self, id = qID, name = qn, descr = qDesc):
 		self.qID, self.qn, self.qDesc = id, name, descr #設定 qid, qn 及 qdesc (如果在腳本最下以  Quest(-1, "abc", "custom") 型色呼叫)
@@ -38,9 +39,7 @@ class Quest(JQuest):
 				members = party.getMembers() #取得一般隊伍所有成員
 			ipDict = {}
 			for m in members:
-				print self.getIP(m)
 				ipDict[self.getIP(m)] = ''
-			print len(ipDict), len(members)
 			if len(ipDict) != len(members):	#有組員的 IP 相同. 沒有特別獎勵
 				return
 			for m in members: #在 members 變數取出每個成員 M
