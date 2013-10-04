@@ -94,6 +94,9 @@ class VCBuff(JQuest, IVoicedCommandHandler):
 				if p.isInStoreMode() or p.isInCraftMode():
 					p.sendMessage("開店/工房 不能++")
 					return False
+				if p.getInstanceId() != 0:
+					p.sendMessage("副本中 不能++")
+					return False
 			return True
 			
 		def process(target):
