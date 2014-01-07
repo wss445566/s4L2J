@@ -1,1 +1,1 @@
-[l2jtw](http://www.l2jtw.com/l2jtwbbs/viewtopic.php?f=82&t=10234)
+http://www.l2jtw.com/l2jtwbbs/viewtopic.php?f=82&t=10234
