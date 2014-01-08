@@ -2,10 +2,11 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+	<script src="src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
 		function SendToServerExec(data)
 		{
-			console.log(data);
+			//console.log(data);
 			$.ajax({
 				type: "POST",
 				processdata: false,
@@ -22,13 +23,19 @@
 		}
 
 		$().ready(function(){
+			var editor = ace.edit("editor");
+			editor.setTheme("ace/theme/solarized_light");
+			//editor.setTheme("ace/theme/ambiance");
+			//editor.setTheme("ace/theme/eclipse");
+			editor.getSession().setMode("ace/mode/python");
+
 			$("form").submit(function(){
 				$("#result").html("<pre>loading................</pre>");
 				SendToServerExec(editor.getValue());
+				editor.focus();
 				return false;
 			});
 		});
-
 	</script>
 </head>
 
@@ -84,15 +91,5 @@ print time.time() - starttime, "秒"
 </div>
 </form>
 <div id=result></div>
-
-<script src="src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
-<script>
-    var editor = ace.edit("editor");
-    editor.setTheme("ace/theme/solarized_light");
-    //editor.setTheme("ace/theme/ambiance");
-    //editor.setTheme("ace/theme/eclipse");
-    editor.getSession().setMode("ace/mode/python");
-</script>
-
 </body>
 </html>
