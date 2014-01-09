@@ -118,7 +118,6 @@ class MergeEnchance(JQuest):
 		if event in self.bodypart:
 			frist_item = self.getEquItem(player, self.bodypart[event])
 			if len(frist_item):
-				print frist_item
 				r = "將要強化的道具:%s +%d<BR>" % (frist_item[0].getItemName(), frist_item[0].getEnchantLevel())
 				items = self.getInvItemById(player, frist_item[0].getItemId())
 				if len(items):
