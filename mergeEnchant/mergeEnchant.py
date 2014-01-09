@@ -11,6 +11,7 @@ from com.l2jserver.gameserver.network.serverpackets import EnchantResult
 from com.l2jserver.gameserver.network.serverpackets import StatusUpdate
 from com.l2jserver.gameserver.network.serverpackets import ItemList
 from com.l2jserver.util import Rnd
+from com.l2jserver.gameserver.model.itemcontainer import Inventory
 
 class MergeEnchance(JQuest):
 	qID = -1				#quest id 預設值
@@ -22,28 +23,40 @@ class MergeEnchance(JQuest):
 	htm_header = "<html><body><title>合拼強化</title>"
 	htm_footer = "</body></html>"
 	htm_select_part = """把要強化的物品裝備好, 選擇要強化的部位<BR>
-	<a action="bypass -h Quest %(qn)s head">頭類</a><BR1>
-	<a action="bypass -h Quest %(qn)s fullarmor">上下連身類</a><BR1>
-	<a action="bypass -h Quest %(qn)s chest">上身類</a><BR1>
-	<a action="bypass -h Quest %(qn)s legs">下身類</a><BR1>
-	<a action="bypass -h Quest %(qn)s gloves">手套類</a><BR1>
-	<a action="bypass -h Quest %(qn)s feet">鞋類</a><BR1>
-	<a action="bypass -h Quest %(qn)s rhand">單手武器</a><BR1>
-	<a action="bypass -h Quest %(qn)s lrhand">雙手武器</a><BR1>
-	<a action="bypass -h Quest %(qn)s lhand">盾/符類</a><BR1>
+	<a action="bypass -h Quest %(qn)s head">頭盔</a><BR1>
+	<a action="bypass -h Quest %(qn)s chest">胸甲</a><BR1>
+	<a action="bypass -h Quest %(qn)s legs">脛甲</a><BR1>
+	<a action="bypass -h Quest %(qn)s gloves">手套</a><BR1>
+	<a action="bypass -h Quest %(qn)s feet">靴子</a><BR1>
+	<a action="bypass -h Quest %(qn)s rhand">武器</a><BR1>
+	<a action="bypass -h Quest %(qn)s lhand">盾牌/符印</a><BR1>
+	<a action="bypass -h Quest %(qn)s lear">左耳</a><BR1>
+	<a action="bypass -h Quest %(qn)s rear">右耳</a><BR1>
+	<a action="bypass -h Quest %(qn)s neck">項鍊</a><BR1>
+	<a action="bypass -h Quest %(qn)s lfinger">左戒</a><BR1>
+	<a action="bypass -h Quest %(qn)s rfinger">右戒</a><BR1>
+	<a action="bypass -h Quest %(qn)s underwear">襯衫</a><BR1>
+	<a action="bypass -h Quest %(qn)s belt">腰帶</a><BR1>
+	<a action="bypass -h Quest %(qn)s back">斗蓬</a><BR1>
 	"""
 	htm_show_2nd_item = """<a action="bypass -h Quest %(qn)s %(tmp)s">%(tmp2)s</a><BR>"""
 	
 	bodypart = {
-		"head":ItemTable._slots.get("head")
-		,"fullarmor":ItemTable._slots.get("fullarmor")
-		,"chest":ItemTable._slots.get("chest")
-		,"legs":ItemTable._slots.get("legs")
-		,"gloves":ItemTable._slots.get("gloves")
-		,"feet":ItemTable._slots.get("feet")
-		,"lhand":ItemTable._slots.get("lhand")
-		,"rhand":ItemTable._slots.get("rhand")
-		,"lrhand":ItemTable._slots.get("lrhand")
+		"head":Inventory.PAPERDOLL_HEAD
+		,"chest":Inventory.PAPERDOLL_CHEST
+		,"legs":Inventory.PAPERDOLL_LEGS
+		,"gloves":Inventory.PAPERDOLL_GLOVES
+		,"feet":Inventory.PAPERDOLL_FEET
+		,"lhand":Inventory.PAPERDOLL_LHAND
+		,"rhand":Inventory.PAPERDOLL_RHAND
+		,"lear":Inventory.PAPERDOLL_LEAR
+		,"rear":Inventory.PAPERDOLL_REAR
+		,"neck":Inventory.PAPERDOLL_NECK
+		,"lfinger":Inventory.PAPERDOLL_LFINGER
+		,"rfinger":Inventory.PAPERDOLL_RFINGER
+		,"belt":Inventory.PAPERDOLL_BELT
+		,"back":Inventory.PAPERDOLL_CLOAK
+		,"underwear":Inventory.PAPERDOLL_UNDER
 	}
 
 	def firstpage(self, **kv):
@@ -60,7 +73,10 @@ class MergeEnchance(JQuest):
 		print "Init:" + self.qn + " loaded"
 
 	def getEquItem(self, player, bodypart):
-		return [x for x in player.getInventory().getItems() if x.getLocation() == ItemLocation.PAPERDOLL and x.getItem().getBodyPart() == bodypart]
+		item = player.getInventory().getPaperdollItem(bodypart)
+		if item:
+			return[item]
+		return []
 		
 	def getInvItemById(self, player, item_id):
 		return [x for x in player.getInventory().getItems() if x.getLocation() == ItemLocation.INVENTORY and x.getItemId() == item_id]
@@ -79,6 +95,8 @@ class MergeEnchance(JQuest):
 		item2 = inv.getItemByObjectId(int(item2))
 		if not self.check(player, item1, item2):
 			return self.htm_header + "指定的道具出問題<BR>請確定道具能強化" + self.htm_footer
+		item1enclvl = item1.getEnchantLevel()
+		item2enclvl = item2.getEnchantLevel()
 		enchant2 = item2.getEnchantLevel()
 		inv.destroyItem(self.qn, item2, player, item2)
 		item1.setEnchantLevel(item1.getEnchantLevel()+Rnd.get(enchant2+1))
@@ -94,12 +112,13 @@ class MergeEnchance(JQuest):
 		player.sendPacket(su)
 		player.sendPacket(ItemList(player, False));
 		player.broadcastUserInfo()
-		return self.htm_header + "恭喜! 合拼強化成功<BR>"+ self.htm_select_part + self.htm_footer
+		return self.htm_header + "恭喜! 合拼強化成功 強化度由 +%d 變為 +%d<BR>" % (item1enclvl, item1.getEnchantLevel()) + self.htm_select_part + self.htm_footer
 		
 	def onAdvEvent(self, event, npc, player):
 		if event in self.bodypart:
 			frist_item = self.getEquItem(player, self.bodypart[event])
 			if len(frist_item):
+				print frist_item
 				r = "將要強化的道具:%s +%d<BR>" % (frist_item[0].getItemName(), frist_item[0].getEnchantLevel())
 				items = self.getInvItemById(player, frist_item[0].getItemId())
 				if len(items):
