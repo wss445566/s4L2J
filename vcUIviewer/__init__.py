@@ -20,7 +20,7 @@ class VCUIviewer(IVoicedCommandHandler):
 	
 	commands = ["ui", "UI"]
 	
-	filelist = {"l2ui":[], "l2ui_ct1":[], "l2ui_ch3":[]}
+	filelist = {}
 	w = 756
 	h = 400
 	fl = 'l2ui'
@@ -45,19 +45,20 @@ class VCUIviewer(IVoicedCommandHandler):
 			
 		r = self.htm_header
 		r += """<table><tr>"""
-		r += """<td><combobox width=100 var="filelist" list=%s></td>""" % ";".join(self.filelist.keys())
-		r += """<td width=40><a action="bypass -h voice .ui fl $filelist">传</a></td>"""
+		r += """<td><combobox width=100 var="filelist" list=%s sel="%s"></td>""" % (";".join(self.filelist.keys()), self.fl)
+		r += """<td width=20><a action="bypass -h voice .ui fl $filelist">传</a></td>"""
 		r += """<td width=20>糴</td><td><edit var="width" width=40 height=12></td>"""
 		r += """<td width=20>蔼</td><td><edit var="height" width=40 height=12></td>"""
 		r += """<td width=20><a action="bypass -h voice .ui wh $width $height">砞</a></td>"""
-		r += """<td width=20></td><td><edit var="page" width=40 height=12></td><td width=40>%d/%d</td>""" % (self.page, len(self.filelist[self.fl])/self.ipp)
+		r += """<td width=20></td><td><edit var="page" width=40 height=12 value="2"></td><td width=50>%d/%d</td>""" % (self.page, len(self.filelist[self.fl])/self.ipp)
 		#r += """<td><combobox width=140 var="page" list=%s></td>""" % ";".join([str(x) for x in xrange((len(self.filelist[self.fl])/self.ipp)+1)])
-		r += """<td width=40><a action="bypass -h voice .ui p $page">传</a></td>"""
-		r += """<td><combobox width=140 var="filename" list=%s></td>""" % ";".join(self.filelist[self.fl][self.ipp * self.page : self.ipp * (self.page+1)])
-		r += """<td width=40><a action="bypass -h voice .ui fn $filename"></a></td>"""
-		r += """<select><option value="a">1</option><option value="b">2</option><option value="c">3</option></select>"""
+		r += """<td width=20><a action="bypass -h voice .ui p $page">传</a></td>"""
+		r += """<td><combobox width=300 var="filename" list=%s sel="%s"></td>""" % (";".join(self.filelist[self.fl][self.ipp * self.page : self.ipp * (self.page+1)]), self.fn)
+		r += """<td width=20><a action="bypass -h voice .ui fn $filename"></a></td>"""
 		r += """</tr></table>"""
-		r += """<img src="%s" width=%d height=%d>""" % (self.fl+"."+self.fn, self.w, self.h)
+		n = self.fl+"."+self.fn
+		r += n
+		r += """<img src="%s" width=%d height=%d>""" % (n, self.w, self.h)
 		r += "======="
 		r += self.htm_footer
 		sendBBS(player, r)
@@ -78,6 +79,8 @@ class VCUIviewer(IVoicedCommandHandler):
 		return r
 		
 	def __init__(self):
+		self.filelist['icon'] = self.parseFile(r"C:\L2JTW\game\data\scripts\custom\vcUIviewer\icon.txt")
+		self.filelist['L2font-tw'] = self.parseFile(r"C:\L2JTW\game\data\scripts\custom\vcUIviewer\l2font-tw.txt")
 		self.filelist['l2ui'] = self.parseFile(r"C:\L2JTW\game\data\scripts\custom\vcUIviewer\l2ui.txt")
 		self.filelist['l2ui_ct1'] = self.parseFile(r"C:\L2JTW\game\data\scripts\custom\vcUIviewer\l2ui_ct1.txt")
 		self.filelist['l2ui_ch3'] = self.parseFile(r"C:\L2JTW\game\data\scripts\custom\vcUIviewer\l2ui_ch3.txt")
