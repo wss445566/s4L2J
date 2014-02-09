@@ -19,6 +19,8 @@ class MergeEnchance(JQuest):
 	qDesc = "custom"		#quest 描述 預設值
 	
 	NPCID = 100				#觸發任務的 NPC
+	chance = 50			#強化成功機率 100 = 100% 必定成功
+	requirements = [[57,1]]	#所需道具 [[道具ID, 數量],[道具ID, 數量],[道具ID, 數量]] 或 [] = 不用扣道具
 	
 	htm_header = "<html><body><title>合拼強化</title>"
 	htm_footer = "</body></html>"
@@ -88,17 +90,39 @@ class MergeEnchance(JQuest):
 		if item2.getOwnerId() != player.getObjectId():return False
 		if not item1.isEnchantable(): return False
 		return True
+	
+	def removeRequirement(self, player):
+		for itemid, count in self.requirements:
+			if self.getQuestItemsCount(player, itemid) < count:
+				return False
+	
+		for itemid, count in self.requirements:
+			if not player.destroyItemByItemId(self.qn, itemid, count, None, True):
+				return False
+		return True
+
+	def updatePlayerInfo(self, player):
+		su = StatusUpdate(player)
+		su.addAttribute(StatusUpdate.CUR_LOAD, player.getCurrentLoad())
+		player.sendPacket(su)
+		player.sendPacket(ItemList(player, False));
+		player.broadcastUserInfo()
 		
-	def merge(self, player, item1, item2):
+	def merge(self, player, item1OID, item2OID):
 		inv = player.getInventory()
-		item1 = inv.getItemByObjectId(int(item1))
-		item2 = inv.getItemByObjectId(int(item2))
+		item1 = inv.getItemByObjectId(int(item1OID))
+		item2 = inv.getItemByObjectId(int(item2OID))
 		if not self.check(player, item1, item2):
 			return self.htm_header + "指定的道具出問題<BR>請確定道具能強化" + self.htm_footer
+		if not self.removeRequirement(player):
+			return self.htm_header + "需要金幣1個" + self.htm_footer
 		item1enclvl = item1.getEnchantLevel()
 		item2enclvl = item2.getEnchantLevel()
 		enchant2 = item2.getEnchantLevel()
 		inv.destroyItem(self.qn, item2, player, item2)
+		if Rnd.get(100) > self.chance:
+			self.updatePlayerInfo(player)
+			return self.htm_header + "<font color=FF0000>合拼強化機率性失敗</font><BR>" + self.htm_select_part + self.htm_footer
 		item1.setEnchantLevel(item1.getEnchantLevel()+Rnd.get(enchant2+1))
 		item1.updateDatabase()
 		player.sendPacket(EnchantResult(0, 0, 0))
@@ -106,20 +130,17 @@ class MergeEnchance(JQuest):
 		sm.addCharName(player)
 		sm.addNumber(item1.getEnchantLevel())
 		sm.addItemName(item1)
-		player.sendPacket(sm)		
-		su = StatusUpdate(player)
-		su.addAttribute(StatusUpdate.CUR_LOAD, player.getCurrentLoad())
-		player.sendPacket(su)
-		player.sendPacket(ItemList(player, False));
-		player.broadcastUserInfo()
-		return self.htm_header + "恭喜! 合拼強化成功 強化度由 +%d 變為 +%d<BR>" % (item1enclvl, item1.getEnchantLevel()) + self.htm_select_part + self.htm_footer
+		player.sendPacket(sm)
+		self.updatePlayerInfo(player)
+		return self.htm_header + "<font color=FFFF00>恭喜! 合拼強化成功 強化度由 +%d 變為 +%d</font><BR>" % (item1enclvl, item1.getEnchantLevel()) + self.htm_select_part + self.htm_footer
 		
 	def onAdvEvent(self, event, npc, player):
 		if event in self.bodypart:
 			frist_item = self.getEquItem(player, self.bodypart[event])
 			if len(frist_item):
-				r = "將要強化的道具:%s +%d<BR>" % (frist_item[0].getItemName(), frist_item[0].getEnchantLevel())
+				r = "將要強化的道具:%s +%d<BR1>" % (frist_item[0].getItemName(), frist_item[0].getEnchantLevel())
 				items = self.getInvItemById(player, frist_item[0].getItemId())
+				r += "<font color=00FF00>將要收取金幣1個作為強化費用</font><BR>"
 				if len(items):
 					r += "背包內有以下犧牲道具可作為合拼之用.<BR1>合拼後選擇的犧牲道具會消失<BR1>合拼後的強化等級 = 裝備道具強化等級 + 隨機值<BR1> 隨機值 = 0 至 (犧牲道具強化等級)<BR1>所以別拿 +0 的來合拼啊<BR>"
 					for item in items:
