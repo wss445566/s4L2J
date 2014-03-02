@@ -31,7 +31,10 @@ class NpcNameTable:
 			
 	def getName(self, id):
 		assert type(id) == type(0)
-		return self.npcNameTable[id]
+		try:
+			return self.npcNameTable[id]
+		except:
+			return ""
 
 		
 class RBTools(JQuest):
